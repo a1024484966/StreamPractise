@@ -1,1 +1,2 @@
-# StreamPractise JAVA stream() 练习
+# StreamPractise 
+JAVA stream() 的练习
