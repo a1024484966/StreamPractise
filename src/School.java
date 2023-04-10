@@ -1,7 +1,9 @@
+import dto.StudentScore;
 import entity.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class School {
     public List<Student> students = new ArrayList<>();
@@ -16,15 +18,58 @@ public class School {
         System.out.println(name);
     }
     public void practise(){
-        //根据sex这一个条件分组
-        Map<String, List<Student>> collect = students.stream().collect(Collectors.groupingBy(obj -> obj.getSex()));
-        collect.forEach((k,v) -> System.out.print(k + v.toString()));
-        System.out.println("\n--------------------------------------------");
-        //分组后统计总和
-        Map<String, Long> collect1 = students.stream().collect(Collectors.groupingBy(obj -> obj.getSex(), Collectors.counting()));
-        collect1.forEach((k,v) -> System.out.print(k+v));
+        //单表的操作 对student举例
+        //1.找出姓中的同学
+        List<Student> collect2 = students.stream().filter(obj -> "中".equals(obj.getName().substring(0,1))).toList();
+        System.out.println("\n-------------------1.找出姓中的同学-------------------------");
+        collect2.forEach(obj -> System.out.print("姓名:"+obj.getName() + " 年龄:" + obj.getAge() + " "));
         System.out.println("\n--------------------------------------------");
 
+        //2.找出姓中的同学 并且是11岁的同学
+        List<Student> collect3 = students.stream()
+                .filter(obj -> "中".equals(obj.getName().substring(0,1)))
+                .filter(obj -> 11 == obj.getAge()).toList();
+        System.out.println("\n------------------2.找出姓中的同学 并且是11岁的同学--------------------------");
+        collect3.forEach(obj -> System.out.print("姓名:"+obj.getName() + " 年龄:" + obj.getAge() + " "));
+        System.out.println("\n--------------------------------------------");
+
+        //找出12岁的同学
+
+        //3.根据性别这一个条件分组
+        Map<String, List<Student>> collect = students.stream().collect(Collectors.groupingBy(obj -> obj.getSex()));
+        System.out.println("\n-----------------3.根据性别分组---------------------------");
+        collect.forEach((k,v) ->{
+            System.out.print(k+"组 ");
+            v.forEach(obj -> System.out.print(obj.getName()));
+            System.out.println();
+        });
+        System.out.println("--------------------------------------------");
+
+        //4.根据性别件分组 并统计总和
+        Map<String, Long> collect1 = students.stream().collect(Collectors.groupingBy(Student::getSex, Collectors.counting()));
+        System.out.println("\n-----------------4.根据性别件分组 并统计总和---------------------------");
+        collect1.forEach((k,v) -> System.out.print(k+"组:"+v+"人 "));
+        System.out.println("\n--------------------------------------------");
+
+        //根据年龄进行分组 并统计同年龄的同学有多少人
+
+        //对姓小的同学进行男女分组 并统计每组多少人
+
+        //多表的操作 基本点把多表合并成单表 对student和score举例
+        System.out.println("\n-----------------多表合并---------------------------");
+        List<StudentScore> collect4 = students.stream().flatMap(student -> scores.stream()
+                        .filter(score -> score.getStudentId() == student.getId())
+                        .map(score -> new StudentScore(student, score)))
+                .toList();
+        collect4.forEach(obj -> {
+            System.out.print(obj.getStudent().getName()+ " 科目"+ obj.getSubjectId()+":" + obj.getPoint()+"分 ");
+        });
+        System.out.println("\n--------------------------------------------");
+        //显示出学科名字
+
+        //找出及格人数
+
+        //分别显示每个班的及格人数
 
     }
 
@@ -33,32 +78,32 @@ public class School {
     }
     public void indexData(){
         students.add(new Student(1,"小明1",10,"男",1));
-        students.add(new Student(2,"小明2",11,"女",1));
-        students.add(new Student(3,"小明3",12,"男",1));
+        students.add(new Student(2,"中明2",11,"女",1));
+        students.add(new Student(3,"大明3",12,"男",1));
         students.add(new Student(4,"小明4",10,"女",1));
         students.add(new Student(5,"小明5",11,"男",1));
-        students.add(new Student(6,"小明6",12,"男",1));
+        students.add(new Student(6,"大明6",12,"男",1));
         students.add(new Student(7,"小明7",13,"女",1));
         students.add(new Student(8,"小明8",11,"女",1));
-        students.add(new Student(9,"小明9",11,"男",1));
-        students.add(new Student(10,"小明10",10,"女",1));
-        students.add(new Student(11,"小明11",11,"不明",1));
+        students.add(new Student(9,"大明9",11,"男",1));
+        students.add(new Student(10,"中明10",10,"女",1));
+        students.add(new Student(11,"中明11",11,"不明",1));
         students.add(new Student(12,"小明12",11,"男",1));
 
         students.add(new Student(13,"小红1",12,"男",2));
         students.add(new Student(14,"小红2",14,"女",2));
-        students.add(new Student(15,"小红3",14,"男",2));
-        students.add(new Student(16,"小红4",15,"女",2));
+        students.add(new Student(15,"大红3",14,"男",2));
+        students.add(new Student(16,"中红4",15,"女",2));
         students.add(new Student(17,"小红5",13,"男",2));
         students.add(new Student(18,"小红6",13,"男",2));
-        students.add(new Student(19,"小红7",13,"男",2));
+        students.add(new Student(19,"中红7",13,"男",2));
         students.add(new Student(20,"小红8",12,"女",2));
-        students.add(new Student(21,"小红9",12,"男",2));
+        students.add(new Student(21,"中红9",12,"男",2));
         students.add(new Student(22,"小红10",11,"男",2));
-        students.add(new Student(23,"小红11",13,"女",2));
-        students.add(new Student(24,"小红12",13,"男",2));
+        students.add(new Student(23,"大红11",13,"女",2));
+        students.add(new Student(24,"中红12",13,"男",2));
         students.add(new Student(25,"小红13",14,"不明",2));
-        students.add(new Student(26,"小红14",14,"男",2));
+        students.add(new Student(26,"大红14",14,"男",2));
 
         classrooms.add(new Classroom(1,"一班",1));
         classrooms.add(new Classroom(2,"二班",2));
